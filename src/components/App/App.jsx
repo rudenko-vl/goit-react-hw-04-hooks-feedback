@@ -1,42 +1,50 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import Section from "../Section/Section";
 import FeedbackOptions from "../FeedbackOptions/FeedbackOptions";
 import Statistics from "../Statistics/Statistics";
 import Notification from "../Notification/Notification";
 import { BtnList } from "../FeedbackOptions/FeedbackOptions.styled";
 
-class App extends Component {
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
-  };
-  handleFeedback = (option) => {
-    this.setState((prewState) => ({ [option]: prewState[option] + 1 }));
+const App = () => {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+
+  
+  const handleFeedback = (option) => {
+    switch (option) {
+      case 'good':
+        setGood(good + 1)
+        break;
+      case 'neutral':
+        setNeutral(neutral + 1)
+        break;
+      case 'bad':
+        setBad(bad + 1)
+        break;
+      default:
+        return;
+    }
   };
 
-  countTotalFeedback = () => {
-    const { good, neutral, bad } = this.state;
+  const countTotalFeedback = () => {
     return good + neutral + bad;
   };
 
-  countPositiveFeedbackPercentage() {
-    const { good } = this.state;
+  const countPositiveFeedbackPercentage =() => {
     const positiveFeedbackPercentage = Math.round(
-      (good * 100) / this.countTotalFeedback()
+      (good * 100) / countTotalFeedback()
     );
     return positiveFeedbackPercentage ? positiveFeedbackPercentage : "0";
   }
 
-  render() {
-    const { good, neutral, bad } = this.state;
     return (
       <>
         <Section title="Please leave feedback">
           <BtnList>
             <FeedbackOptions
-              options={Object.keys(this.state)}
-              onHandleFeedback={this.handleFeedback}
+              options={['good', 'neutral', 'bad']}
+              onHandleFeedback={handleFeedback}
             />
           </BtnList>
         </Section>
@@ -46,8 +54,8 @@ class App extends Component {
               good={good}
               neutral={neutral}
               bad={bad}
-              total={this.countTotalFeedback()}
-              positivePercentage={this.countPositiveFeedbackPercentage()}
+              total={countTotalFeedback()}
+              positivePercentage={countPositiveFeedbackPercentage()}
             />
           </Section>
         ) : (
@@ -56,6 +64,6 @@ class App extends Component {
       </>
     );
   }
-}
+
 
 export default App;
